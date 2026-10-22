@@ -9,10 +9,13 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DB_URI")
 
-engine = create_async_engine(DATABASE_URL, echo=True)
+if not DATABASE_URL:
+    raise RuntimeError("DB_URI is not configured")
+
+engine = create_async_engine(DATABASE_URL, echo=True ,pool_pre_ping=True,)
 
 AsyncSessionLocal = sessionmaker(
-    engine,
+    bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
 )
