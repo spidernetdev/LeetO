@@ -1,0 +1,6 @@
+{
+  "name": "LeetO — AI-Powered DSA Progress Dashboard",
+  "description": "Track LeetCode submissions, organize solved problems by algorithmic patterns, review code, and analyze your DSA preparation progress.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
