@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Backend /api/auth/me endpoint is not implemented
         setUser(null);
         setBackendAuthStatus('endpoint_missing');
-        setBackendAuthError('The backend authentication endpoint (/api/auth/me) was not found.');
+        setBackendAuthError(`The backend authentication endpoint (/api/auth/me) was not found at ${API_BASE_URL}.`);
         return null;
       }
 

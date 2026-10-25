@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
+import { API_BASE_URL } from './api';
 
 const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-const rawApiUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
 
 /** Canonical public origin used for metadata, sitemap, and robots. */
 export const SITE_URL = (rawSiteUrl || 'https://leeto.app').replace(/\/+$/, '');
 
 /** Backend origin (kept out of crawlable links). */
-export const API_ORIGIN = (rawApiUrl || 'http://localhost:8000').replace(/\/+$/, '');
+export const API_ORIGIN = API_BASE_URL;
 
 export const SITE_NAME = 'LeetO';
 export const SITE_TITLE = 'LeetO — AI-Powered DSA Progress Dashboard';

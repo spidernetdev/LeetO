@@ -15,11 +15,21 @@ def _bool(name: str, default: bool = False) -> bool:
     return os.getenv(name, str(default)).strip().lower() in {"1", "true", "yes"}
 
 
+def _clean_url(name: str, default: str = "") -> str:
+    raw = os.getenv(name, default).strip().strip('"').strip("'")
+    if "," in raw:
+        items = [i.strip().strip('"').strip("'") for i in raw.split(",") if i.strip()]
+        if os.getenv("RENDER") or os.getenv("ENVIRONMENT") == "production":
+            return next((i for i in items if i.startswith("https://")), items[0])
+        return next((i for i in items if not i.startswith("https://")), items[0])
+    return raw
+
+
 # ---------------- Google OAuth (checked when a login starts) ----------------
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip().strip('"').strip("'")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip().strip('"').strip("'")
 # Must be registered in Google Cloud Console -> Authorized redirect URIs
-GOOGLE_REDIRECT_URI = os.getenv(
+GOOGLE_REDIRECT_URI = _clean_url(
     "GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/google/callback"
 )
 

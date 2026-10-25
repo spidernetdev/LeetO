@@ -9,9 +9,29 @@ import {
 } from './types';
 import { normalizeLanguage } from './utils';
 
+export function sanitizeApiBaseUrl(url?: string): string {
+  if (!url) return 'http://localhost:8000';
+  let cleaned = url.trim().replace(/^["']+|["']+$/g, '').trim();
+  if (cleaned.includes(',')) {
+    const urls = cleaned
+      .split(',')
+      .map(u => u.trim().replace(/^["']+|["']+$/g, '').trim())
+      .filter(Boolean);
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hostname !== 'localhost' &&
+      window.location.hostname !== '127.0.0.1'
+    ) {
+      cleaned = urls.find(u => u.startsWith('https://')) || urls[0];
+    } else {
+      cleaned = urls.find(u => u.includes('localhost') || u.includes('127.0.0.1')) || urls[0];
+    }
+  }
+  return cleaned.replace(/\/+$/, '');
+}
+
 // Public backend base URL (no secrets or credentials)
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+export const API_BASE_URL = sanitizeApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
 
 // Configurable Chrome extension bundle URL
 export const CHROME_EXTENSION_URL =
@@ -142,7 +162,11 @@ export async function fetchWithTimeout(
     if (!headers.has(k) && v) headers.set(k, v);
   });
 
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url =
+    endpoint.startsWith('http://') || endpoint.startsWith('https://')
+      ? endpoint
+      : `${API_BASE_URL}${cleanEndpoint}`;
 
   try {
     const response = await fetch(url, {
