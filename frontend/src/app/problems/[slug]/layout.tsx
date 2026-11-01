@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { AppShell } from '@/src/components/layout/AppShell';
 import { privatePageMetadata } from '@/src/lib/seo';
 
 export const metadata: Metadata = privatePageMetadata(
@@ -8,5 +7,5 @@ export const metadata: Metadata = privatePageMetadata(
 );
 
 export default function ProblemDetailLayout({ children }: { children: React.ReactNode }) {
-  return <AppShell>{children}</AppShell>;
+  return <>{children}</>;
 }
